@@ -1,0 +1,15 @@
+dev\labintec\model\RepositoryUser.class
+dev\labintec\model\IRepoTrans.class
+dev\labintec\model\entities\Tramite.class
+dev\labintec\demo\App.class
+dev\labintec\business\TransactionTypeService.class
+dev\labintec\business\ConfigurationService.class
+dev\labintec\database\DBHandler.class
+dev\labintec\model\RepositoryTransaction.class
+dev\labintec\business\security\AuthenticationService.class
+dev\labintec\model\IRepo.class
+dev\labintec\business\security\IAuthService.class
+dev\labintec\model\IRepoUser.class
+dev\labintec\business\IConfService.class
+dev\labintec\model\entities\Usuario.class
+dev\labintec\business\ITransTypeService.class
