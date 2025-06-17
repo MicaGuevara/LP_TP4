@@ -4,13 +4,26 @@
  */
 package dev.labintec.model.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 /**
  *
  * @author Micaela
  */
+@Entity
+@Table(name="Usuario")
 public class Usuario {//POJO
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private int id;
+    @Column(name = "username")
    private String username;
+    @Column(name = "passw")
    private String password; //bd passw
 
     public Usuario() {
@@ -50,6 +63,6 @@ public class Usuario {//POJO
 
     @Override
     public String toString() {
-        return "USUARIO {" + "ID=" + id + ", USERNAME=" + username + ", PASSWORD=" + password + '}';
+        return "USUARIO {" + "ID=" + id + ", USERNAME=" + username + ", PASSWORD=" + "NULL" + '}';
     } 
 }

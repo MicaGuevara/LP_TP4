@@ -9,7 +9,6 @@ dev\labintec\model\RepositoryTransaction.class
 dev\labintec\business\security\AuthenticationService.class
 dev\labintec\model\IRepo.class
 dev\labintec\business\security\IAuthService.class
-dev\labintec\model\IRepoUser.class
 dev\labintec\business\IConfService.class
 dev\labintec\model\entities\Usuario.class
 dev\labintec\business\ITransTypeService.class

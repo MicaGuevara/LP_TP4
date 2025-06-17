@@ -5,10 +5,10 @@
 package dev.labintec.model;
 
 import dev.labintec.model.entities.Usuario;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,139 +19,113 @@ import java.util.List;
  */
 public class RepositoryUser implements IRepo <Usuario> { //CRUD
       
-    private Connection connection; 
+
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public RepositoryUser() {
+        emf = Persistence.createEntityManagerFactory("miUnidadPersistencia");
+        em = emf.createEntityManager();
     }
 
-    public RepositoryUser(Connection connection) {
-        this.connection = connection; //recibe una conecccion para interactuar con la base de datos.
+    public RepositoryUser(EntityManager em) {
+        this.em = em;
     }
     
     /**
      * Método que permite insertar un nuevo usuario en la base de datos.
-     * Recibe un objeto Usuario y guarda sus datos (username y password).
+     * Abre una transacción, guarda el objeto y la confirma.
      */
     
     @Override
     public void create(Usuario entity) {
         try {
-            String query = "insert into usuario (username, passw) values (?,?)";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            psmt.setString(1, entity.getUsername());
-            psmt.setString(2, entity.getPassword());
-            psmt.executeUpdate();
-            psmt.close();
-            System.out.println("USUARIO CREADO CON EXITO. ");
-        } catch (SQLException ex) {
+          em.getTransaction().begin();
+          em.persist(entity);
+          em.getTransaction().commit();
+            System.out.println("USUARIO CREADO CON EXITO.");
+        } catch (Exception ex) {
+            em.getTransaction().rollback(); // Si hay error, se revierte
             System.out.println("NO SE PUEDO CREAR LA CONSULTA. " + ex.getMessage());
         }
     }
     
-     /**
-     * Método para obtener un usuario por su ID.
-     * Retorna un objeto Usuario si lo encuentra, o null si no existe.
+    /**
+     * Método que busca un usuario por su ID.
+     * Utiliza el método find de JPA.
      */
 
     @Override
     public Usuario read(int id) {
         Usuario u = null;
         try {
-            String query = "select * from usuario where id = ?";
-            PreparedStatement psmt =connection.prepareStatement(query);
-            psmt.setInt(1, id); // Setea el parámetro ID en la consulta
-            ResultSet rs = psmt.executeQuery();// Ejecuta la consulta
-            if (rs.next()) { // Si se encontró un resultado
-                u = new Usuario(rs.getInt("id"), rs.getString("username"), rs.getString("passw"));
-            }
-            rs.close();
-            psmt.close();
-        } catch (SQLException ex) {
-            System.out.println("ERROR AL CONECTAR A LA BASE DE DATOS. " + ex.getMessage());
+            return em.find(Usuario.class, id);
+        } catch (Exception ex) {
+            
+            System.out.println("ERROR AL LEER USUARIO POR ID. " + ex.getMessage());
         }
         return u;
     }
      
     /**
-     * Método que obtiene todos los usuarios de la base de datos.
-     * Retorna una lista de objetos Usuario.
+     * Método que recupera todos los usuarios de la base de datos.
+     * Utiliza JPQL (Java Persistence Query Language).
      */
-
     @Override
     public List<Usuario> readAll() {
-        List<Usuario> usuarios = new ArrayList();// Lista para almacenar los usuarios
-        try {
-            String query = "select * from usuario";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            ResultSet rs = psmt.executeQuery();
-            while(rs.next()) {
-                Usuario u = new Usuario();// Crea un nuevo objeto usuario
-                u.setId(rs.getInt("id"));
-                u.setUsername(rs.getString("username"));
-                usuarios.add(u);// Agrega el usuario a la lista
-            }
-            psmt.close();
-        } catch (SQLException ex) {
-            System.out.println("ERROR AL CONECTAR A LA BASE DE DATOS. " + ex.getMessage());
+          List<Usuario> usuarios = new ArrayList<>();
+         try {
+             usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
+         } catch (Exception ex) {
+             System.out.println("ERROR AL LEER USUARIOS. " + ex.getMessage());
         }
         return usuarios;
     }
 
+
     /**
-     * Método para actualizar los datos de un usuario.
-     * Modifica el username y password del usuario con el ID especificado.
+     * Método que actualiza los datos de un usuario.
+     * Usa merge para sincronizar el objeto actualizado con la base de datos.
      */
     
     @Override
     public void update(Usuario entity) { 
           try {
-        String query = "UPDATE usuario SET username = ?, passw = ? WHERE id = ?";
-        PreparedStatement psmt = connection.prepareStatement(query);
-        psmt.setString(1, entity.getUsername());
-        psmt.setString(2, entity.getPassword()); 
-        psmt.setInt(3, entity.getId());          
-        psmt.executeUpdate();// Ejecuta la actualización
-        psmt.close();
-        } catch (SQLException ex) {
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
             System.out.println("NO SE PUDO CREAR LA CONSULTA. " + ex.getMessage());
         }
     }
 
     /**
-     * Método para eliminar un usuario de la base de datos según su ID.
+     * Método que elimina un usuario por su ID.
+     * Primero busca el objeto y luego lo elimina dentro de una transacción.
      */
     @Override
     public void delete(int id) {
-        try {
-            String query = "delete from usuario where id = ?";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            psmt.setInt(1, id);// Setea el ID del usuario a eliminar
-            psmt.executeUpdate();
-            psmt.close();      
-        } catch (SQLException ex) {
-            System.out.println("NO SE PUDO  ELIMINAR USUARIO.");
+        Usuario u = em.find(Usuario.class, id);
+        if (u != null) {
+            em.getTransaction().begin();
+            em.remove(u);
+            em.getTransaction().commit();
         }
     }
     
     /**
-     * Método adicional que permite obtener un usuario por su nombre de usuario (username).
-     * Útil para autenticación o validaciones.
+     * Método adicional para buscar un usuario por su username.
+     * Devuelve el objeto si lo encuentra o null si no existe.
      */
     
     public Usuario readByUsername(String username) {
         Usuario u = null;
         try {
-            String query = "select * from usuario where username = ?";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            psmt.setString(1, username);
-            ResultSet rs = psmt.executeQuery();
-            while(rs.next()) {
-                u = new Usuario(rs.getInt("id"), rs.getString("username"),rs.getString("passw"));
-            }
-            psmt.close();
-        } catch (SQLException ex) {
-            System.out.println(" ERROR AL LEER USUARIO POR USERNAME: " + ex.getMessage() );
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.username = :username", Usuario.class)
+                     .setParameter("username", username)
+                     .getSingleResult();
+        } catch (NoResultException e) {
+            return u;
         }
-        return u;
     }
 }

@@ -1,15 +1,14 @@
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\IRepo.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\IRepoUser.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\ITransTypeService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\security\IAuthService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\TransactionTypeService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\IConfService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\demo\App.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\IRepoTrans.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\RepositoryTransaction.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\RepositoryUser.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\entities\Tramite.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\database\DBHandler.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\ConfigurationService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\security\AuthenticationService.java
-C:\Users\HP Pavilion\Desktop\UNPA MICA\laboratorio de programacion\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\entities\Usuario.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\ITransTypeService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\security\IAuthService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\demo\App.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\IConfService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\security\AuthenticationService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\ConfigurationService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\database\DBHandler.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\entities\Usuario.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\IRepo.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\entities\Tramite.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\IRepoTrans.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\RepositoryTransaction.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\business\TransactionTypeService.java
+C:\Users\HP Pavilion\Desktop\TRABAJO Nº4-GUEVARA\LP-TP4-GUEVARA\src\main\java\dev\labintec\model\RepositoryUser.java

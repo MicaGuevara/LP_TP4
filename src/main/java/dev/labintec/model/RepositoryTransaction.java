@@ -6,10 +6,11 @@ package dev.labintec.model;
 
 
 import dev.labintec.model.entities.Tramite;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import dev.labintec.model.entities.Usuario;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,56 +20,54 @@ import java.util.List;
  */
 public class RepositoryTransaction implements IRepo <Tramite>{ //CRUD
     
-    private Connection connection;
-
-    public RepositoryTransaction(Connection connection) {
-        this.connection = connection;//recibe una conecccion para interactuar con la base de datos.
-    }
-    
+//    private EntityManagerFactory emf;
+//    private EntityManager em;
+//
+//    public RepositoryTransaction() {
+//        emf = Persistence.createEntityManagerFactory("miUnidadPersistencia");
+//        em = emf.createEntityManager();
+//    }
+//
+//    public RepositoryTransaction(EntityManager em) {
+//        this.em = em;
+//    }
+     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("miUnidadPersistencia");
+     EntityManager em = emf.createEntityManager();  
     /**
      * Método que permite insertar un nuevo tramite en la base de datos.
-     * Recibe un objeto Tramite y guarda sus datos (tipo,estado y descripcion).
+     * Abre una transacción, guarda el objeto y la confirma.
      */
     
     @Override
     public void create(Tramite entity) {
+        EntityManager em = emf.createEntityManager();  
         try {
-            String query = "insert into tramite (tipo, estado, descripcion) values (?,?,?)";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            psmt.setString(1, entity.getTipo());
-            psmt.setString(2, entity.getEstado());
-            psmt.setString(3, entity.getDescripcion());
-            psmt.executeUpdate();
-            psmt.close();
-            System.out.println("TRAMITE CREADO CON EXITO. ");
-        } catch (SQLException ex) {
+          em.getTransaction().begin();
+          em.persist(entity);
+          em.getTransaction().commit();
+            System.out.println("TRAMITE CREADO CON EXITO.");
+        } catch (Exception ex) {
+            em.getTransaction().rollback(); // Si hay error, se revierte
             System.out.println("NO SE PUEDO CREAR LA CONSULTA. " + ex.getMessage());
         }
     }
     
-     /**
-     * Método para obtener un Tramite por su ID.
-     * Retorna un objeto Tramite si lo encuentra, o null si no existe.
+    /**
+     * Método que busca un tramite por su ID.
+     * Utiliza el método find de JPA.
      */
 
     @Override
     public Tramite read(int id) {
-        Tramite t = null;
+        EntityManager em = emf.createEntityManager();  
+        Tramite u = null;
         try {
-            String query = "select * from tramite where id = ?";
-            PreparedStatement psmt =connection.prepareStatement(query);
-            psmt.setInt(1, id);
-            ResultSet rs = psmt.executeQuery();
+            return em.find(Tramite.class, id);
+        } catch (Exception ex) {
             
-            if (rs.next()) { 
-                t = new Tramite(rs.getInt("id"), rs.getString("tipo"), rs.getString("estado"), rs.getString("descripcion"));
-            }
-            rs.close();
-            psmt.close();
-        } catch (SQLException ex) {
-            System.out.println("ERROR AL CONECTAR A LA BASE DE DATOS. " + ex.getMessage());
+            System.out.println("ERROR AL LEER TRAMITE POR ID. " + ex.getMessage());
         }
-        return t;
+        return u;
     }
     
     /**
@@ -78,84 +77,66 @@ public class RepositoryTransaction implements IRepo <Tramite>{ //CRUD
     
     @Override
     public List<Tramite> readAll() {
-        List<Tramite> tramite = new ArrayList();
-        try {
-            String query = "select * from tramite";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            ResultSet rs = psmt.executeQuery();
-               
-            while(rs.next()) {
-                Tramite t = new Tramite();
-                t.setId(rs.getInt("id"));
-                t.setTipo(rs.getString("tipo"));
-                t.setEstado(rs.getString("estado"));
-                t.setDescripcion(rs.getString("descripcion"));
-                tramite.add(t);
-            }
-            psmt.close();
-        } catch (SQLException ex) {
-            System.out.println("ERROR AL CONECTAR A LA BASE DE DATOS. " + ex.getMessage());
+        EntityManager em = emf.createEntityManager();  
+          List<Tramite> tramites = new ArrayList<>();
+         try {
+             tramites = em.createQuery("SELECT u FROM Tramite u", Tramite.class).getResultList();
+         } catch (Exception ex) {
+             System.out.println("ERROR AL LEER TRAMITES. " + ex.getMessage());
         }
-        return tramite;
+        return tramites;
     }
     
-     /**
-     * Método para actualizar los datos de un tramite.
-     * Modifica el tipo,estado y descripcion del tramite con el ID especificado.
+    /**
+     * Método que actualiza los datos de un tramite.
+     * Usa merge para sincronizar el objeto actualizado con la base de datos.
      */
 
     @Override
     public void update(Tramite entity) {
-                  try {
-        String query = "UPDATE Tramite SET tipo = ?, estado = ?, descripcion =? WHERE id = ?";
-        PreparedStatement psmt = connection.prepareStatement(query);
-        psmt.setString(1, entity.getTipo()); 
-        psmt.setString(2, entity.getEstado());
-        psmt.setString(3, entity.getDescripcion());
-        psmt.setInt(4, entity.getId());          
-            psmt.executeUpdate();
-            psmt.close();
-        } catch (SQLException ex) {
+        EntityManager em = emf.createEntityManager();  
+        try {
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
             System.out.println("NO SE PUDO CREAR LA CONSULTA. " + ex.getMessage());
         }
     }
     
-     /**
-     * Método para eliminar un tramite de la base de datos según su ID.
+    /**
+     * Método que elimina un tramite por su ID.
+     * Primero busca el objeto y luego lo elimina dentro de una transacción.
      */
-
     @Override
     public void delete(int  id) {
-        try {
-            String query = "delete from Tramite where id = ?";
-            PreparedStatement psmt = connection.prepareStatement(query);
-            psmt.setInt(1, id);
-            psmt.executeUpdate();
-            psmt.close();      
-        } catch (SQLException ex) {
-            System.out.println("NO SE PUDO  ELIMINAR TRAMITE.");
+        EntityManager em = emf.createEntityManager();  
+        Usuario u = em.find(Usuario.class, id);
+        if (u != null) {
+            em.getTransaction().begin();
+            em.remove(u);
+            em.getTransaction().commit();
         }
     }
     
+    /**
+     * Método adicional para buscar un tramite por su tipo.
+     * Devuelve el objeto si lo encuentra o null si no existe.
+     */
     public Tramite readByTipo(String tipo) {
-    Tramite t = null;
-    try {
-        String query = "SELECT * FROM tramite WHERE tipo = ?";
-        PreparedStatement psmt = connection.prepareStatement(query);
-        psmt.setString(1, tipo);
-        ResultSet rs = psmt.executeQuery();
-        while (rs.next()) {
-            t = new Tramite(
-                rs.getInt("id"),
-                rs.getString("tipo"),
-                rs.getString("estado"),
-                rs.getString("descripcion")
-            );
+        EntityManager em = emf.createEntityManager();  
+      try {
+            return em.createQuery("SELECT t FROM Tramite t WHERE t.tipo = :tipo", Tramite.class)
+                    .setParameter("tipo", tipo)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception ex) {
+            System.out.println("ERROR AL LEER TRAMITE POR TIPO. " + ex.getMessage());
+            return null;
+        } finally {
+            em.close();
         }
-        psmt.close();
-    } catch (SQLException ex) {
-        System.out.println("ERROR AL LEER TRAMITE POR TIPO: " + ex.getMessage());
-    }
-    return t;
-    }
+ }
 }
+
